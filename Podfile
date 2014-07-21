@@ -1,6 +1,5 @@
 platform :ios, '7.0'
 pod 'hpple',             '~> 0.2.0'
-pod 'ParseKit',          '~> 0.7'
 pod 'UIImage+Additions', '~> 1.0.1'
 pod 'UIImageEffects',    '~> 0.0.1'
 pod 'iOS-blur',          '~> 0.0.5'

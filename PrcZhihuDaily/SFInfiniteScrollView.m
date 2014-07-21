@@ -9,7 +9,9 @@
 #import "SFInfiniteScrollView.h"
 
 @interface SFInfiniteScrollView()<UIScrollViewDelegate>
-
+/**
+ *  存放ScrollView 各个imageView的Array
+ */
 @property (nonatomic, strong) NSArray *imageViewArray;
 @property (nonatomic, strong) UIPageControl *pageControl;
 @property (nonatomic, strong) UIScrollView *scrollView;
@@ -23,66 +25,111 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self setupScrollView];
+
     }
+    return self;
+}
+
+- (id)initWithFrame:(CGRect)frame imageArray:(NSArray *)imageArray
+{
+    self = [self initWithFrame:frame];
+    [self setupWithImageArray:imageArray];
     return self;
 }
 
 - (void)setupScrollView
 {
-    self.scrollView = [[UIScrollView alloc]initWithFrame:self.frame];
-    [self addSubview:self.scrollView];
     self.imageViewArray = [NSArray new];
+    
+    self.scrollView = [[UIScrollView alloc]initWithFrame:self.frame];
     self.scrollView.pagingEnabled = YES;
     self.scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, self.frame.size.height);
     self.scrollView.contentOffset = CGPointMake(0, 0);
     self.scrollView.delegate = self;
-    self.pageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(self.frame.size.width/2, self.frame.size.height-30, 50, 30)];
+    self.scrollView.showsVerticalScrollIndicator = NO;
+    [self addSubview:self.scrollView];
+    
+    self.pageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(self.frame.size.width/2-25, self.frame.size.height-15, 50, 30)];
     self.pageControl.numberOfPages = 1;
     self.pageControl.currentPage = 0;
-    self.pageControl.backgroundColor = [UIColor blackColor];
+    self.pageControl.backgroundColor = [UIColor clearColor];
+    self.pageControl.pageIndicatorTintColor = [UIColor grayColor];
+    self.pageControl.currentPageIndicatorTintColor = [UIColor blackColor];
     [self addSubview:self.pageControl];
-    [self bringSubviewToFront:self.pageControl];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     NSInteger currentPage = lround(self.scrollView.contentOffset.x/SCREEN_WIDTH);
     self.pageControl.currentPage = currentPage;
-    [self bringSubviewToFront:self.pageControl];
 
+}
+
+/**
+ *  仅在初始化时候调用
+ *
+ *  @param imageArray 要求均为 UIImage
+ */
+- (void)setupWithImageArray:(NSArray *)imageArray
+{
+    NSMutableArray *imageViewArray = [self.imageViewArray mutableCopy];
+    self.scrollView.contentSize = CGSizeMake(SCREEN_WIDTH*(imageArray.count), self.frame.size.height);
+    while (imageViewArray.count < imageArray.count) {
+        [imageViewArray addObject:[NSNull null]];
+    }
+    self.pageControl.numberOfPages = imageArray.count;
+
+    for (NSInteger i = 0; i<imageArray.count ;i++) {
+        UIImage *image = imageArray[i];
+        if (![image isKindOfClass:[UIImage class]]) {
+            [NSException raise:@"AddingNotUIImage" format:@"The class of adding object is %@",[[image class] description]];
+        }
+        
+        UIImageView *imageViewToAdd = [[UIImageView alloc]initWithFrame:CGRectMake(i*SCREEN_WIDTH, 0, SCREEN_WIDTH, self.frame.size.height)];
+        imageViewToAdd.tag = i;
+        imageViewToAdd.image = image;
+        [self.scrollView addSubview:imageViewToAdd];
+        [imageViewArray replaceObjectAtIndex:i withObject:imageViewToAdd];
+    }
+    self.imageViewArray = [imageViewArray copy];
 }
 
 - (void)addImage:(UIImage *)image atIndex:(NSUInteger)index
 {
     NSMutableArray *imageViewArray = [self.imageViewArray mutableCopy];
-    if ([image isKindOfClass:[UIImage class]]) {
-        while (imageViewArray.count <= index) {
-            [imageViewArray addObject:[NSNull null]];
-        }
-    }
-    else{
+    if (![image isKindOfClass:[UIImage class]]) {
         [NSException raise:@"AddingNotUIImage" format:@"The class of adding object is %@",[[image class] description]];
     }
-    
-    if (index>self.imageViewArray.count) {
-        NSLog(@"Adding above index of imageViewArray, will add at the end");
+    if (index > self.imageViewArray.count) {
         index = self.imageViewArray.count;
     }
     
+    [imageViewArray insertObject:image atIndex:index];
     self.scrollView.contentSize = CGSizeMake(SCREEN_WIDTH*(imageViewArray.count), self.frame.size.height);
     
+    //index 后的 imageView 位置后移
+    for (NSInteger i = 0; i< self.scrollView.subviews.count; i++){
+        NSInteger imageViewTag = ((UIImageView *)self.scrollView.subviews[i]).tag;
+        if (imageViewTag >= index) {
+            CGRect changedRect;
+            changedRect = ((UIImageView *)self.scrollView.subviews[i]).frame;
+            changedRect.origin.x += SCREEN_WIDTH;
+            ((UIImageView *)self.scrollView.subviews[i]).frame = changedRect;
+        }
+    }
+    
+    
     UIImageView *imageViewToAdd = [[UIImageView alloc]initWithFrame:CGRectMake(index*SCREEN_WIDTH, 0, SCREEN_WIDTH, self.frame.size.height)];
-    NSLog(@"index:%zd",index);
     imageViewToAdd.image = image;
+    
     [self.scrollView addSubview: imageViewToAdd];
     self.pageControl.numberOfPages = imageViewArray.count;
 
     [imageViewArray replaceObjectAtIndex:index withObject:imageViewToAdd];
     self.imageViewArray = [imageViewArray copy];
-    [self bringSubviewToFront:self.pageControl];
 }
 
-- (void)addImage:(UIImage *)image
+- (void)addImageAtEnd:(UIImage *)image
 {
     [self addImage:image atIndex:self.imageViewArray.count];
 }
@@ -101,6 +148,9 @@
     NSMutableArray *imageViewArray = [self.imageViewArray mutableCopy];
     [imageViewArray removeObjectAtIndex:index];
     self.imageViewArray = imageViewArray;
+    
+    self.scrollView.contentSize = self.scrollView.contentSize = CGSizeMake(SCREEN_WIDTH*(imageViewArray.count), self.frame.size.height);
+//    self
 }
 
 
