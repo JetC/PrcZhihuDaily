@@ -33,7 +33,6 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-//    self.scrollView.contentSize = CGSizeMake(200, 200);
 
 }
 

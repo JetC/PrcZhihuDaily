@@ -8,9 +8,11 @@
 
 #import "SFInfiniteScrollView.h"
 
-@interface SFInfiniteScrollView()
+@interface SFInfiniteScrollView()<UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSArray *imageViewArray;
+@property (nonatomic, strong) UIPageControl *pageControl;
+@property (nonatomic, strong) UIView *baseView;
 
 @end
 
@@ -20,15 +22,34 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        self.imageViewArray = [NSArray new];
+        [self setupScrollView];
     }
     return self;
 }
 
 - (void)setupScrollView
 {
+    self.baseView = [[UIView alloc]initWithFrame:self.frame];
+    [self addSubview:self.baseView];
+    self.imageViewArray = [NSArray new];
     self.pagingEnabled = YES;
-    self.contentSize = CGSizeMake(SCREEN_WIDTH*3, self.frame.size.height);
+    self.contentSize = CGSizeMake(SCREEN_WIDTH, self.frame.size.height);
+    self.contentOffset = CGPointMake(0, 0);
+    self.delegate = self;
+    self.pageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(self.frame.size.width/2, self.frame.size.height-30, 50, 30)];
+    self.pageControl.numberOfPages = 1;
+    self.pageControl.currentPage = 0;
+    self.pageControl.backgroundColor = [UIColor blackColor];
+    [self addSubview:self.pageControl];
+    [self bringSubviewToFront:self.pageControl];
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    NSInteger currentPage = lround(self.contentOffset.x/SCREEN_WIDTH);
+    self.pageControl.currentPage = currentPage;
+    [self bringSubviewToFront:self.pageControl];
+
 }
 
 - (void)addImage:(UIImage *)image atIndex:(NSUInteger)index
@@ -51,12 +72,14 @@
     self.contentSize = CGSizeMake(SCREEN_WIDTH*(imageViewArray.count), self.frame.size.height);
     
     UIImageView *imageViewToAdd = [[UIImageView alloc]initWithFrame:CGRectMake(index*SCREEN_WIDTH, 0, SCREEN_WIDTH, self.frame.size.height)];
+    NSLog(@"index:%zd",index);
     imageViewToAdd.image = image;
-    [self addSubview: imageViewToAdd];
-    
-    
+    [self.baseView addSubview: imageViewToAdd];
+    self.pageControl.numberOfPages = imageViewArray.count;
+
     [imageViewArray replaceObjectAtIndex:index withObject:imageViewToAdd];
     self.imageViewArray = [imageViewArray copy];
+    [self bringSubviewToFront:self.pageControl];
 }
 
 - (void)addImage:(UIImage *)image

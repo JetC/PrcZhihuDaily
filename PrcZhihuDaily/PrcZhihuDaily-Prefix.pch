@@ -41,14 +41,14 @@
 #define APPDELEGATE ((ZQAppDelegate *)[UIApplication sharedApplication].delegate)
 #define appOrientation [[UIApplication sharedApplication] statusBarOrientation]
 
-    #ifdef DEBUG
-        #import "LoggerClient.h"
-        #define NSLog(...) LogMessageF( \
-                    __FILE__,           \
-                    __LINE__,           \
-                    __FUNCTION__,       \
-                    nil, 0,             \
-                    __VA_ARGS__)
-    #endif
+//    #ifdef DEBUG
+//        #import "LoggerClient.h"
+//        #define NSLog(...) LogMessageF( \
+//                    __FILE__,           \
+//                    __LINE__,           \
+//                    __FUNCTION__,       \
+//                    nil, 0,             \
+//                    __VA_ARGS__)
+//    #endif
 
 #endif
