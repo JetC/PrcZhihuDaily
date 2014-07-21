@@ -7,8 +7,12 @@
 //
 
 #import "SFViewController.h"
+#import "SFInfiniteScrollView.h"
 
 @interface SFViewController ()
+
+@property (nonatomic, strong) SFInfiniteScrollView *scrollView;
+
 
 @end
 
@@ -17,8 +21,22 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+	self.scrollView = [[SFInfiniteScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT/5)];
+    
+    [self.scrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
+    [self.scrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
+    [self.scrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
+
+    [self.view addSubview:self.scrollView];
+    
 }
+
+- (void)viewDidAppear:(BOOL)animated
+{
+//    self.scrollView.contentSize = CGSizeMake(200, 200);
+
+}
+
 
 - (void)didReceiveMemoryWarning
 {

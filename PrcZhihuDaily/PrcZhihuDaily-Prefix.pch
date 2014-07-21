@@ -6,11 +6,49 @@
 
 #import <Availability.h>
 
-#ifndef __IPHONE_5_0
-#warning "This project uses features only available in iOS SDK 5.0 and later."
-#endif
+#define Testflight 1
 
 #ifdef __OBJC__
-    #import <UIKit/UIKit.h>
-    #import <Foundation/Foundation.h>
+@import SystemConfiguration;
+@import MobileCoreServices;
+@import UIKit;
+@import Foundation;
+@import CoreData;
+
+//#import "UIView+ZQ.h"
+//#import "MobClick.h"
+#import <BlocksKit/BlocksKit.h>
+#import <BlocksKit/BlocksKit+UIKit.h>
+
+#define kStatusBarHeight 20
+#define kNavigationBarHeight 44
+#define kNavigationBarWithStatusBarHeight 64
+#define kTabBarHeight 49
+
+#define SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+#define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
+
+
+#define IOSSystemVersion [[[UIDevice currentDevice] systemVersion] floatValue]
+
+// rgb颜色转换（16进制->10进制）
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
+#define UDSUD [NSUserDefaults standardUserDefaults]
+#define NCDC [NSNotificationCenter defaultCenter]
+#define FM [NSFileManager defaultManager]
+#define APPSHAREAPP [UIApplication sharedApplication]
+#define APPDELEGATE ((ZQAppDelegate *)[UIApplication sharedApplication].delegate)
+#define appOrientation [[UIApplication sharedApplication] statusBarOrientation]
+
+    #ifdef DEBUG
+        #import "LoggerClient.h"
+        #define NSLog(...) LogMessageF( \
+                    __FILE__,           \
+                    __LINE__,           \
+                    __FUNCTION__,       \
+                    nil, 0,             \
+                    __VA_ARGS__)
+    #endif
+
 #endif
