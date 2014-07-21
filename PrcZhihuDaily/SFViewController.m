@@ -11,7 +11,7 @@
 
 @interface SFViewController ()
 
-@property (nonatomic, strong) SFInfiniteScrollView *scrollView;
+@property (nonatomic, strong) SFInfiniteScrollView *infiniteScrollView;
 
 
 @end
@@ -21,13 +21,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	self.scrollView = [[SFInfiniteScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT/5)];
+	self.infiniteScrollView = [[SFInfiniteScrollView alloc]initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT/5)];
     
-    [self.scrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
-    [self.scrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
-    [self.scrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
+    [self.infiniteScrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
+    [self.infiniteScrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
+    [self.infiniteScrollView addImage:[UIImage imageNamed:@"7C50238EB92F56A0A7CB8B760382A2D0"]];
 
-    [self.view addSubview:self.scrollView];
+    [self.view addSubview:self.infiniteScrollView];
     
 }
 

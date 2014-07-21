@@ -14,7 +14,7 @@
 
 @end
 
-@interface SFInfiniteScrollView : UIScrollView
+@interface SFInfiniteScrollView : UIView
 
 - (void)addImage:(UIImage *)image atIndex:(NSUInteger)index;
 - (void)addImage:(UIImage *)image;

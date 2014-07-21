@@ -12,7 +12,7 @@
 
 @property (nonatomic, strong) NSArray *imageViewArray;
 @property (nonatomic, strong) UIPageControl *pageControl;
-@property (nonatomic, strong) UIView *baseView;
+@property (nonatomic, strong) UIScrollView *scrollView;
 
 @end
 
@@ -29,13 +29,13 @@
 
 - (void)setupScrollView
 {
-    self.baseView = [[UIView alloc]initWithFrame:self.frame];
-    [self addSubview:self.baseView];
+    self.scrollView = [[UIScrollView alloc]initWithFrame:self.frame];
+    [self addSubview:self.scrollView];
     self.imageViewArray = [NSArray new];
-    self.pagingEnabled = YES;
-    self.contentSize = CGSizeMake(SCREEN_WIDTH, self.frame.size.height);
-    self.contentOffset = CGPointMake(0, 0);
-    self.delegate = self;
+    self.scrollView.pagingEnabled = YES;
+    self.scrollView.contentSize = CGSizeMake(SCREEN_WIDTH, self.frame.size.height);
+    self.scrollView.contentOffset = CGPointMake(0, 0);
+    self.scrollView.delegate = self;
     self.pageControl = [[UIPageControl alloc]initWithFrame:CGRectMake(self.frame.size.width/2, self.frame.size.height-30, 50, 30)];
     self.pageControl.numberOfPages = 1;
     self.pageControl.currentPage = 0;
@@ -46,7 +46,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    NSInteger currentPage = lround(self.contentOffset.x/SCREEN_WIDTH);
+    NSInteger currentPage = lround(self.scrollView.contentOffset.x/SCREEN_WIDTH);
     self.pageControl.currentPage = currentPage;
     [self bringSubviewToFront:self.pageControl];
 
@@ -69,12 +69,12 @@
         index = self.imageViewArray.count;
     }
     
-    self.contentSize = CGSizeMake(SCREEN_WIDTH*(imageViewArray.count), self.frame.size.height);
+    self.scrollView.contentSize = CGSizeMake(SCREEN_WIDTH*(imageViewArray.count), self.frame.size.height);
     
     UIImageView *imageViewToAdd = [[UIImageView alloc]initWithFrame:CGRectMake(index*SCREEN_WIDTH, 0, SCREEN_WIDTH, self.frame.size.height)];
     NSLog(@"index:%zd",index);
     imageViewToAdd.image = image;
-    [self.baseView addSubview: imageViewToAdd];
+    [self.scrollView addSubview: imageViewToAdd];
     self.pageControl.numberOfPages = imageViewArray.count;
 
     [imageViewArray replaceObjectAtIndex:index withObject:imageViewToAdd];
